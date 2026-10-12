@@ -1,3 +1,4 @@
+
 package com.teammatch.backend.config;
 
 import org.springframework.context.annotation.Bean;
@@ -14,34 +15,45 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 
 @Configuration(proxyBeanMethods = false)
 public class SecurityConfiguration {
-	@Bean
-	AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-		return configuration.getAuthenticationManager();
-	}
 
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http,
-			SecurityContextRepository securityContextRepository) throws Exception {
-		http
-				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(HttpMethod.POST, "/api/students", "/api/auth/login").permitAll()
-						.requestMatchers(HttpMethod.GET, "/api/csrf").permitAll()
-						.requestMatchers(HttpMethod.GET, "/api/students").hasRole("ADMIN")
-						.requestMatchers("/api/admin/**").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.POST, "/api/skills/**").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.PUT, "/api/skills/**").hasRole("ADMIN")
-						.anyRequest().authenticated())
-						.requestMatchers("/", "/actuator/health").permitAll()
-				.httpBasic(basic -> basic.authenticationEntryPoint((request, response, exception) ->
-						response.setStatus(401)))
-				.securityContext(context -> context.securityContextRepository(securityContextRepository))
-				.csrf(Customizer.withDefaults())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
-		return http.build();
-	}
+    @Bean
+    AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
-	@Bean
-	SecurityContextRepository securityContextRepository() {
-		return new HttpSessionSecurityContextRepository();
-	}
+    @Bean
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            SecurityContextRepository securityContextRepository) throws Exception {
+
+        http
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/", "/actuator/health").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/students", "/api/auth/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/csrf").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/students").hasRole("ADMIN")
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/skills/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/skills/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .httpBasic(basic -> basic.authenticationEntryPoint(
+                (request, response, exception) -> response.setStatus(401)
+            ))
+            .securityContext(context ->
+                context.securityContextRepository(securityContextRepository)
+            )
+            .csrf(Customizer.withDefaults())
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            );
+
+        return http.build();
+    }
+
+    @Bean
+    SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
 }
