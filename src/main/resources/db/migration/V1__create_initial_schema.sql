@@ -35,7 +35,8 @@ CREATE TABLE projects (
 CREATE TABLE project_required_skills (
 	project_id BIGINT NOT NULL,
 	skill_id BIGINT NOT NULL,
-	CONSTRAINT uk_project_required_skill UNIQUE (project_id, skill_id),
+	CONSTRAINT pk_project_required_skills PRIMARY KEY (project_id, skill_id),
+    CONSTRAINT uk_project_required_skill UNIQUE (project_id, skill_id),
 	CONSTRAINT fk_project_required_skills_project
 		FOREIGN KEY (project_id) REFERENCES projects (id),
 	CONSTRAINT fk_project_required_skills_skill
