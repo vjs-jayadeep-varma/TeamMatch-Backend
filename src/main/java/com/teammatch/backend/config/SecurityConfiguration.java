@@ -55,7 +55,13 @@ public class SecurityConfiguration {
             .securityContext(context ->
                 context.securityContextRepository(securityContextRepository)
             )
-            .csrf(Customizer.withDefaults())
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers(
+                    "/api/students",
+                    "/api/students/**",
+                    "/api/auth/login"
+                )
+            )
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             );
