@@ -31,6 +31,7 @@ public class SecurityConfiguration {
 						.requestMatchers(HttpMethod.POST, "/api/skills/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PUT, "/api/skills/**").hasRole("ADMIN")
 						.anyRequest().authenticated())
+						.requestMatchers("/", "/actuator/health").permitAll()
 				.httpBasic(basic -> basic.authenticationEntryPoint((request, response, exception) ->
 						response.setStatus(401)))
 				.securityContext(context -> context.securityContextRepository(securityContextRepository))
