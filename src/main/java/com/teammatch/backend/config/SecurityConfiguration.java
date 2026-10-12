@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                 .requestMatchers(
                     HttpMethod.POST,
                     "/api/students",
+                    "/api/students/**",
                     "/api/auth/login"
                 ).permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/csrf").permitAll()
